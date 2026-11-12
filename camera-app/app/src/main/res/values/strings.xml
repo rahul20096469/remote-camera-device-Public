@@ -1,0 +1,11 @@
+<resources>
+    <string name="app_name">Remote Camera Device</string>
+    <string name="app_title">Remote Camera Device</string>
+    <string name="device_id_label">Device ID: %1$s…</string>
+    <string name="permissions_not_yet_granted">Camera and microphone access is needed to start.</string>
+    <string name="permissions_granted">Ready. Scan this code from the Viewer app to pair.</string>
+    <string name="permissions_denied">Permission denied. The app cannot work without it.</string>
+    <string name="permissions_required_explanation">Camera and microphone permission is required for this app to function.</string>
+    <string name="grant_permissions_button">Grant Permissions</string>
+    <string name="qr_code_description">Permanent pairing QR code</string>
+</resources>
