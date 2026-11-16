@@ -5,15 +5,6 @@ import org.webrtc.*
 import com.google.firebase.database.FirebaseDatabase
 import org.json.JSONObject
 
-/**
- * Wraps the WebRTC engine: creates the local camera+mic track, builds the
- * peer connection, and exchanges the offer/answer/ICE messages through
- * Firebase Realtime Database under this device's node.
- *
- * This class only ever sends media after start() is called explicitly from
- * CallActivity - which itself only calls start() after the host has tapped
- * "Accept" on an incoming request. It never starts on its own.
- */
 class WebRtcClient(
     private val context: Context,
     private val deviceId: String,
@@ -45,15 +36,9 @@ class WebRtcClient(
             .createPeerConnectionFactory()
     }
 
-    /**
-     * Starts the local camera + microphone capture and creates the peer
-     * connection. Called only after explicit host confirmation - see
-     * CallActivity.
-     */
     fun start(localVideoSink: VideoSink) {
         val factory = peerConnectionFactory ?: return
 
-        // Camera capture
         val cameraEnumerator = Camera2Enumerator(context)
         val cameraName = cameraEnumerator.deviceNames.firstOrNull {
             cameraEnumerator.isBackFacing(it)
@@ -69,12 +54,10 @@ class WebRtcClient(
         localVideoTrack = factory.createVideoTrack("local_video", videoSource)
         localVideoTrack?.addSink(localVideoSink)
 
-        // Microphone capture
         val audioConstraints = MediaConstraints()
         val audioSource = factory.createAudioSource(audioConstraints)
         localAudioTrack = factory.createAudioTrack("local_audio", audioSource)
 
-        // Peer connection
         val iceServers = listOf(
             PeerConnection.IceServer.builder("stun:stun.l.google.com:19302").createIceServer()
         )
@@ -105,13 +88,22 @@ class WebRtcClient(
 
     private fun createOffer() {
         val constraints = MediaConstraints()
-        peerConnection?.createOffer(object : SdpObserverAdapter() {
-            override fun onCreateSuccess(desc: SessionDescription) {
-                peerConnection?.setLocalDescription(SdpObserverAdapter(), desc)
+        peerConnection?.createOffer(object : SdpObserver {
+            override fun onCreateSuccess(desc: SessionDescription?) {
+                if (desc == null) return
+                peerConnection?.setLocalDescription(object : SdpObserver {
+                    override fun onCreateSuccess(p0: SessionDescription?) {}
+                    override fun onSetSuccess() {}
+                    override fun onCreateFailure(p0: String?) {}
+                    override fun onSetFailure(p0: String?) {}
+                }, desc)
                 signalingRef.child("offer").setValue(
                     mapOf("type" to desc.type.canonicalForm(), "sdp" to desc.description)
                 )
             }
+            override fun onSetSuccess() {}
+            override fun onCreateFailure(p0: String?) {}
+            override fun onSetFailure(p0: String?) {}
         }, constraints)
     }
 
@@ -131,7 +123,12 @@ class WebRtcClient(
                 val sdp = snapshot.child("sdp").getValue(String::class.java)
                 if (type != null && sdp != null) {
                     val desc = SessionDescription(SessionDescription.Type.fromCanonicalForm(type), sdp)
-                    peerConnection?.setRemoteDescription(SdpObserverAdapter(), desc)
+                    peerConnection?.setRemoteDescription(object : SdpObserver {
+                        override fun onCreateSuccess(p0: SessionDescription?) {}
+                        override fun onSetSuccess() {}
+                        override fun onCreateFailure(p0: String?) {}
+                        override fun onSetFailure(p0: String?) {}
+                    }, desc)
                 }
             }
             override fun onCancelled(error: com.google.firebase.database.DatabaseError) {}
@@ -155,7 +152,6 @@ class WebRtcClient(
         })
     }
 
-    /** Stops capture and tears down the connection. Clears signaling data too. */
     fun stop() {
         videoCapturer?.stopCapture()
         videoCapturer?.dispose()
@@ -163,12 +159,5 @@ class WebRtcClient(
         localAudioTrack?.dispose()
         peerConnection?.close()
         signalingRef.removeValue()
-    }
-
-    private open class SdpObserverAdapter : SdpObserver {
-        override fun onCreateSuccess(desc: SessionDescription?) {}
-        override fun onSetSuccess() {}
-        override fun onCreateFailure(error: String?) {}
-        override fun onSetFailure(error: String?) {}
     }
 }
