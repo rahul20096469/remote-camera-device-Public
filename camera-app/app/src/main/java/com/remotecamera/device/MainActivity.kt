@@ -76,8 +76,10 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun startPairingListener() {
+        Toast.makeText(this, "Trying to sign in to Firebase...", Toast.LENGTH_SHORT).show()
         pairingManager.start(
             onReady = {
+                Toast.makeText(this, "Firebase sign-in SUCCESS", Toast.LENGTH_LONG).show()
                 pairingManager.listenForIncomingRequest { viewerId ->
                     if (!callStarted) {
                         callStarted = true
@@ -88,7 +90,7 @@ class MainActivity : AppCompatActivity() {
                 }
             },
             onError = { e ->
-                Toast.makeText(this, e.message, Toast.LENGTH_LONG).show()
+                Toast.makeText(this, "Firebase ERROR: ${e.message}", Toast.LENGTH_LONG).show()
             }
         )
     }
