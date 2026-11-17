@@ -1,0 +1,11 @@
+<resources>
+    <string name="app_name">Remote Camera Viewer</string>
+    <string name="viewer_title">Remote Camera Viewer</string>
+    <string name="scan_instruction">Scan the QR code shown on the camera device</string>
+    <string name="scan_button">Scan QR Code</string>
+    <string name="invalid_qr_code">Invalid QR code. Please try again.</string>
+    <string name="camera_permission_needed">Camera permission is needed to scan the code.</string>
+    <string name="connecting_text">Connecting…</string>
+    <string name="connected_text">Connected</string>
+    <string name="disconnect_button">Disconnect</string>
+</resources>
