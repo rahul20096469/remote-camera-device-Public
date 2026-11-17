@@ -1,0 +1,49 @@
+{
+  "project_info": {
+    "project_number": "669898235183",
+    "firebase_url": "https://remotecameradevice-default-rtdb.asia-southeast1.firebasedatabase.app",
+    "project_id": "remotecameradevice",
+    "storage_bucket": "remotecameradevice.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:669898235183:android:ec46cd4041e926791155da",
+        "android_client_info": {
+          "package_name": "com.remotecamera.device"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDmBj-_H2s-2kzAY8sPSufqJntMOipe3qM"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:669898235183:android:39d6c163d0c2fb791155da",
+        "android_client_info": {
+          "package_name": "com.remotecamera.viewer"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDmBj-_H2s-2kzAY8sPSufqJntMOipe3qM"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
